@@ -1,0 +1,25 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String   @id @default(uuid())     // UUID as the primary key
+  email    String   @unique                  // Email must be unique
+  name     String?                           // Optional name
+  password String                            // Required password
+  posts    Post[]                            // One-to-many relationship with Post
+}
+
+model Post {
+  id        String   @id @default(uuid())    // UUID as the primary key
+  title     String                           // Title of the post
+  content   String                           // Content of the post
+  published Boolean  @default(false)         // Published status, defaults to false
+  author    User     @relation(fields: [authorId], references: [id]) // Foreign key to User
+  authorId  String                           // Author's ID (foreign key)
+}
